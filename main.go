@@ -18,6 +18,7 @@ func main() {
 
 func run(ctx context.Context) error {
 	cfg, err := config.New()
+	cfg.Port = 8080
 	if err != nil {
 		return err
 	}
