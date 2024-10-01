@@ -28,7 +28,8 @@ jobs:
           go-version: '>=1.23'
       - uses: actions/checkout@v3
       - run: |
-          go install github.com/k0kubun/sqldef/cmd/mysqldef@latest
+#          go install github.com/k0kubun/sqldef/cmd/mysqldef@latest
+           go install github.com/sqldef/sqldef@latest
           mysqldef -u todo -p todo -h 127.0.0.1 -P3306 todo < ./tools/mysql/schema.sql
           go test ./... -coverprofile=coverage.out
       - name: report coverage
