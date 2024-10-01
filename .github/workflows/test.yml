@@ -18,7 +18,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ALLOW_PASSWORD: yes
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_USER: todo
           MYSQL_PASSWORD: todo
           MYSQL_DATABASE: todo
