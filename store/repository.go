@@ -6,6 +6,7 @@ import (
 	"Bangseungjae/go-todo-app/config"
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -13,6 +14,14 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	// 확장된 SQL 기능을 제공하는 sqlx 패키지를 임포트합니다.
 	"github.com/jmoiron/sqlx"
+)
+
+const (
+	ErrCodeMySQLDuplicateEntry = 1062
+)
+
+var (
+	ErrAlreadyEntry = errors.New("duplicate entry")
 )
 
 // New 함수는 데이터베이스 연결을 생성하고 반환합니다.

@@ -2,6 +2,7 @@ version: "3.9"
 services:
   app:
     image: gotodo
+    container_name: todo-app
     build:
       args:
         - target=dev
@@ -31,6 +32,15 @@ services:
       - $PWD/_tools/mysql/conf.d:/etc/mysql/conf.d:cached
     ports:
       - "3306:3306"
+  todo-redis:
+    image: "redis:latest"
+    container_name: todo-redis
+    ports:
+      - "36789:6379"
+    volumes:
+      - todo-redis-data:/data
+
 
 volumes:
   todo-db-data:
+  todo-redis-data:

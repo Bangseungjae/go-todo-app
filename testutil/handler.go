@@ -20,7 +20,7 @@ func AssertJSON(t *testing.T, want, got []byte) {
 		t.Fatalf("cannot unmarshal got %q: %v", got, err)
 	}
 	if diff := cmp.Diff(jg, jw); diff != "" {
-		t.Errorf("got differs (-got +want)\n%s", diff)
+		t.Errorf("got differs: (-got +want)\n%s", diff)
 	}
 }
 
