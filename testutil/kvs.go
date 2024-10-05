@@ -12,7 +12,7 @@ func OpenRedisForTest(t *testing.T) *redis.Client {
 	t.Helper()
 
 	host := "127.0.0.1"
-	port := 36379 // 기본 사용 포트
+	port := 36789 // 기본 사용 포트
 
 	if _, defined := os.LookupEnv("CI"); defined { // CI 환경인 경우
 		port = 6379
