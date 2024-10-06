@@ -9,7 +9,7 @@ import (
 
 type ListTask struct {
 	DB   store.Queryer
-	Repo TaskListener
+	Repo TaskLister
 }
 
 func (l *ListTask) ListTasks(ctx context.Context) (entity.Tasks, error) {
