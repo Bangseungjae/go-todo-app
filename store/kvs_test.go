@@ -30,22 +30,26 @@ func TestKVS_Load(t *testing.T) {
 	t.Parallel()
 
 	cli := testutil.OpenRedisForTest(t)
-
 	sut := &KVS{Cli: cli}
-	key := "TestKVS_Save"
-	uid := entity.UserID(1234)
-	ctx := context.Background()
-	cli.Set(ctx, key, int64(uid), 30*time.Minute)
-	t.Cleanup(func() {
-		cli.Del(ctx, key)
+
+	t.Run("ok", func(t *testing.T) {
+		t.Parallel()
+
+		key := "TestKVS_Load_ok"
+		uid := entity.UserID(1234)
+		ctx := context.Background()
+		cli.Set(ctx, key, int64(uid), 30*time.Minute)
+		t.Cleanup(func() {
+			cli.Del(ctx, key)
+		})
+		got, err := sut.Load(ctx, key)
+		if err != nil {
+			t.Fatalf("want no error, but got %v", err)
+		}
+		if got != uid {
+			t.Errorf("want %d, but got %d", uid, got)
+		}
 	})
-	got, err := sut.Load(ctx, key)
-	if err != nil {
-		t.Errorf("want no error, but got %v", err)
-	}
-	if got != uid {
-		t.Errorf("want %d, but got %d", uid, got)
-	}
 
 	t.Run("notFound", func(t *testing.T) {
 		t.Parallel()
@@ -57,5 +61,4 @@ func TestKVS_Load(t *testing.T) {
 			t.Errorf("want %v, but got %v(value = %d)", ErrNotFound, err, got)
 		}
 	})
-
 }
