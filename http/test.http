@@ -1,8 +1,50 @@
+@DNS_HOST = localhost:18000
+
 ### Login
-POST localhost:18000/login
+POST {{DNS_HOST}}/login
 Content-Type: application/json
 
 {
-  "user_name": "john",
-  "password": "test"
+  "user_name": "user",
+  "password": "test_user"
 }
+> {% client.global.set("auth_token", response.body.access_token); %}
+
+### 사용자 등록 [Admin]
+POST {{DNS_HOST}}/register
+Content-Type: application/json
+
+{
+  "name": "admin_user",
+  "password": "test",
+  "role": "admin"
+}
+
+### 사용자 등록 [User]
+POST {{DNS_HOST}}/register
+Content-Type: application/json
+
+{
+  "name": "user",
+  "password": "test_user",
+  "role": "user"
+}
+
+### Task 등록
+POST {{DNS_HOST}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Programming Go2"
+}
+
+### Tasks 조회
+GET {{DNS_HOST}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+### 관리자 권한으로 엔드포인트 접근하기
+GET {{DNS_HOST}}/admin
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
