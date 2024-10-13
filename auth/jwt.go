@@ -102,3 +102,54 @@ func (j *JWTer) GetToken(ctx context.Context, r *http.Request) (jwt.Token, error
 	}
 	return token, nil
 }
+
+type userIDKey struct{}
+type roleKey struct{}
+
+func SetUserID(ctx context.Context, uid entity.UserID) context.Context {
+	return context.WithValue(ctx, userIDKey{}, uid)
+}
+
+func GetUserID(ctx context.Context) (entity.UserID, bool) {
+	id, ok := ctx.Value(userIDKey{}).(entity.UserID)
+	return id, ok
+}
+
+func SetRole(ctx context.Context, tok jwt.Token) context.Context {
+	get, ok := tok.Get(RoleKey)
+	if !ok {
+		return context.WithValue(ctx, roleKey{}, "")
+	}
+	return context.WithValue(ctx, roleKey{}, get)
+}
+
+func GetRole(ctx context.Context) (string, bool) {
+	role, ok := ctx.Value(roleKey{}).(string)
+	return role, ok
+}
+
+// JWX로부터 받은 데이터를 context.Context 타입값에 포함시킨다.
+func (j *JWTer) FillContext(r *http.Request) (*http.Request, error) {
+	token, err := j.GetToken(r.Context(), r)
+	if err != nil {
+		return nil, err
+	}
+	uid, err := j.Store.Load(r.Context(), token.JwtID())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := SetUserID(r.Context(), uid)
+	ctx = SetRole(ctx, token)
+	clone := r.Clone(ctx)
+	return clone, nil
+}
+
+// 전달된 context.Context 타입값에서 관리자 권한 유무를 확인한다.
+func IsAdmin(ctx context.Context) bool {
+	role, ok := GetRole(ctx)
+	if !ok {
+		return false
+	}
+	return role == "admin"
+}
